@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sanjay G Hegde — DevOps Engineer. CI/CD pipelines, Kubernetes, AWS, Terraform, Ansible.">
+<title>Sanjay Hegde — DevOps Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f5f0e3;
+    --cream-deep:#ece1c8;
+    --surface:#faf6ec;
+    --border:#ddcda3;
+    --ink:#241f18;
+    --ink-soft:#655c48;
+    --pine:#1f5f49;
+    --pine-strong:#164539;
+    --pine-soft:#dbe8de;
+    --amber:#a1701f;
+    --amber-soft:#f0e0bd;
+    --rust:#9c4a34;
+    --shadow: rgba(36,31,24,0.14);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --cream:#1a1611;
+      --cream-deep:#221c15;
+      --surface:#221c15;
+      --border:#3c3223;
+      --ink:#f0e8d6;
+      --ink-soft:#b3a789;
+      --pine:#57c69a;
+      --pine-strong:#7fdcb4;
+      --pine-soft:#25352c;
+      --amber:#e0a94c;
+      --amber-soft:#332a17;
+      --rust:#e08065;
+      --shadow: rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --cream:#1a1611;
+    --cream-deep:#221c15;
+    --surface:#221c15;
+    --border:#3c3223;
+    --ink:#f0e8d6;
+    --ink-soft:#b3a789;
+    --pine:#57c69a;
+    --pine-strong:#7fdcb4;
+    --pine-soft:#25352c;
+    --amber:#e0a94c;
+    --amber-soft:#332a17;
+    --rust:#e08065;
+    --shadow: rgba(0,0,0,0.45);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:"Zilla Slab", Georgia, serif;
+    text-wrap:balance;
+    margin:0;
+  }
+  code, .mono{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+  }
+  a{color:inherit;}
+  p{line-height:1.6;}
+  img{max-width:100%;}
+  ::selection{background:var(--pine-soft); color:var(--pine-strong);}
+
+  .wrap{max-width:1040px; margin:0 auto; padding-inline:24px;}
+
+  /* progress bar */
+  #progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg, var(--pine), var(--amber));
+    z-index:100; transition:width .1s linear;
+  }
+
+  /* nav */
+  nav{
+    position:sticky; top:0; z-index:90;
+    background:color-mix(in srgb, var(--cream) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding-block:14px;
+    max-width:1040px; margin:0 auto; padding-inline:24px;
+    overflow-x:auto; scrollbar-width:none;
+  }
+  .nav-inner::-webkit-scrollbar{display:none;}
+  .brand{
+    font-family:"Zilla Slab", serif; font-weight:700; font-size:1.05rem;
+    white-space:nowrap; letter-spacing:.01em;
+  }
+  .brand .dot{color:var(--pine);}
+  .nav-links{display:flex; gap:22px; list-style:none; margin:0; padding:0; white-space:nowrap;}
+  .nav-links a{
+    font-family:"IBM Plex Mono", monospace; font-size:.8rem; text-decoration:none;
+    color:var(--ink-soft); position:relative; padding-bottom:4px;
+    transition:color .2s ease;
+  }
+  .nav-links a::after{
+    content:""; position:absolute; left:0; right:100%; bottom:0; height:2px;
+    background:var(--pine); transition:right .25s ease;
+  }
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a.active{color:var(--pine);}
+  .nav-links a.active::after{right:0;}
+  .status-pill{
+    display:flex; align-items:center; gap:7px; white-space:nowrap;
+    font-family:"IBM Plex Mono", monospace; font-size:.72rem;
+    background:var(--pine-soft); color:var(--pine-strong);
+    border:1px solid color-mix(in srgb, var(--pine) 35%, transparent);
+    padding:6px 10px; border-radius:99px;
+  }
+  .dotpulse{
+    width:7px; height:7px; border-radius:50%; background:var(--pine);
+    box-shadow:0 0 0 0 color-mix(in srgb, var(--pine) 55%, transparent);
+    animation:pulse 2.2s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--pine) 55%, transparent);}
+    70%{box-shadow:0 0 0 7px color-mix(in srgb, var(--pine) 0%, transparent);}
+    100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--pine) 0%, transparent);}
+  }
+
+  section{padding-block:74px; border-bottom:1px solid var(--border);}
+  section:last-of-type{border-bottom:none;}
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace; font-size:.78rem; color:var(--pine);
+    display:flex; align-items:center; gap:8px; margin-bottom:14px;
+  }
+  .eyebrow::before{content:"$"; color:var(--amber);}
+
+  /* reveal-on-scroll: visible by default, JS only hides for animation */
+  .reveal{ opacity:1; transform:none; transition:opacity .7s ease, transform .7s ease; }
+  .reveal.reveal-hidden{ opacity:0; transform:translateY(26px); }
+
+  /* HERO */
+  #home{padding-top:60px; padding-bottom:80px;}
+  .hero-grid{display:flex; flex-direction:column; gap:26px;}
+  .hero-name{
+    font-size:clamp(2.6rem, 7vw, 4.6rem); font-weight:700; line-height:1.02;
+  }
+  .hero-role{
+    font-family:"IBM Plex Mono", monospace; font-size:clamp(1rem,2.4vw,1.3rem);
+    color:var(--pine-strong); min-height:1.6em; display:flex; align-items:center;
+  }
+  .caret{display:inline-block; width:2px; height:1.05em; background:var(--pine); margin-left:6px; animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .hero-summary{max-width:640px; font-size:1.06rem; color:var(--ink-soft);}
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap; margin-top:6px;}
+  .btn{
+    font-family:"IBM Plex Mono", monospace; font-size:.85rem; text-decoration:none;
+    padding:12px 20px; border-radius:8px; display:inline-flex; align-items:center; gap:8px;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+    border:1px solid transparent;
+  }
+  .btn-primary{background:var(--pine); color:var(--surface);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 24px -8px var(--shadow);}
+  .btn-ghost{border-color:var(--border); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--pine); color:var(--pine-strong); transform:translateY(-2px);}
+
+  .stat-row{display:flex; gap:18px; flex-wrap:wrap; margin-top:18px;}
+  .stat{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 18px; min-width:130px;
+  }
+  .stat .n{font-family:"Zilla Slab", serif; font-weight:700; font-size:1.5rem; color:var(--pine-strong);}
+  .stat .l{font-family:"IBM Plex Mono", monospace; font-size:.7rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+
+  /* ABOUT */
+  .about-body{font-size:1.05rem; max-width:720px; color:var(--ink-soft);}
+  .about-body strong{color:var(--ink); font-weight:600;}
+
+  /* STACK */
+  .stack-grid{display:grid; gap:22px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  .stack-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;}
+  .stack-key{font-family:"IBM Plex Mono", monospace; color:var(--amber); font-size:.85rem; margin-bottom:12px; display:block;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-family:"IBM Plex Mono", monospace; font-size:.74rem; padding:5px 10px; border-radius:6px;
+    background:var(--cream-deep); border:1px solid var(--border); color:var(--ink-soft);
+    transition:all .18s ease;
+  }
+  .chip:hover{background:var(--pine-soft); color:var(--pine-strong); border-color:var(--pine); transform:translateY(-1px);}
+
+  /* EXPERIENCE */
+  .exp-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:26px 28px;
+  }
+  .exp-head{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:flex-start; margin-bottom:6px;}
+  .exp-role{font-family:"Zilla Slab", serif; font-weight:600; font-size:1.3rem;}
+  .exp-meta{font-family:"IBM Plex Mono", monospace; font-size:.78rem; color:var(--ink-soft); margin-top:4px;}
+  .badge{
+    font-family:"IBM Plex Mono", monospace; font-size:.7rem; background:var(--pine-soft); color:var(--pine-strong);
+    border-radius:99px; padding:5px 12px; display:flex; align-items:center; gap:6px; white-space:nowrap;
+  }
+  .exp-list{list-style:none; margin:18px 0 0; padding:0; display:flex; flex-direction:column; gap:12px;}
+  .exp-list li{display:flex; gap:12px; align-items:flex-start; color:var(--ink-soft); font-size:.96rem;}
+  .exp-list li::before{
+    content:"›"; color:var(--pine); font-family:"IBM Plex Mono", monospace; font-weight:600; flex:none; margin-top:1px;
+  }
+
+  /* PROJECTS */
+  .proj-grid{display:grid; gap:22px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+  .proj-card{
+    background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--pine);
+    border-radius:12px; padding:22px; display:flex; flex-direction:column; gap:12px;
+    transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  }
+  .proj-card:hover{transform:translateY(-5px); box-shadow:0 16px 32px -14px var(--shadow); border-left-color:var(--amber);}
+  .proj-top{display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
+  .proj-title{font-family:"Zilla Slab", serif; font-weight:600; font-size:1.14rem;}
+  .status{
+    font-family:"IBM Plex Mono", monospace; font-size:.66rem; background:var(--pine-soft); color:var(--pine-strong);
+    border-radius:99px; padding:4px 10px; display:flex; align-items:center; gap:6px; white-space:nowrap; flex:none;
+  }
+  .status .dotpulse{width:6px; height:6px;}
+  .proj-tags{display:flex; flex-wrap:wrap; gap:6px;}
+  .proj-tags span{
+    font-family:"IBM Plex Mono", monospace; font-size:.68rem; color:var(--ink-soft);
+    background:var(--cream-deep); border:1px solid var(--border); padding:3px 8px; border-radius:5px;
+  }
+  .proj-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; flex:1;}
+  .proj-list li{display:flex; gap:9px; color:var(--ink-soft); font-size:.9rem; line-height:1.5;}
+  .proj-list li::before{content:"›"; color:var(--amber); font-family:"IBM Plex Mono", monospace; flex:none;}
+  .proj-link{
+    font-family:"IBM Plex Mono", monospace; font-size:.78rem; color:var(--pine-strong); text-decoration:none;
+    display:inline-flex; align-items:center; gap:6px; margin-top:auto; padding-top:4px;
+  }
+  .proj-link:hover{text-decoration:underline;}
+  .proj-link svg{transition:transform .2s ease;}
+  .proj-link:hover svg{transform:translate(2px,-2px);}
+
+  /* ACADEMIC + EDU */
+  .split{display:grid; gap:24px; grid-template-columns:1.3fr 1fr;}
+  @media (max-width:720px){.split{grid-template-columns:1fr;}}
+  .mini-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px;}
+  .mini-card h3{font-size:1.05rem; margin-bottom:8px;}
+  .mini-card p{color:var(--ink-soft); font-size:.92rem; margin:0;}
+  .mini-tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;}
+  .mini-tags span{font-family:"IBM Plex Mono", monospace; font-size:.66rem; color:var(--amber); background:var(--amber-soft); padding:3px 8px; border-radius:5px;}
+  .edu-row{display:flex; justify-content:space-between; gap:10px; font-family:"IBM Plex Mono", monospace; font-size:.78rem; color:var(--ink-soft); margin-top:10px;}
+  .achieve{
+    margin-top:16px; padding-top:16px; border-top:1px dashed var(--border);
+    font-size:.88rem; color:var(--ink-soft); display:flex; gap:10px;
+  }
+  .achieve::before{content:"★"; color:var(--amber); flex:none;}
+
+  /* CONTACT */
+  .contact-card{
+    background:var(--ink); color:var(--cream); border-radius:16px; padding:40px;
+    display:flex; flex-direction:column; gap:20px;
+  }
+  :root[data-theme="dark"] .contact-card, :root:not([data-theme="light"]) .contact-card{background:var(--cream-deep); color:var(--ink);}
+  @media (prefers-color-scheme: light){ .contact-card{background:var(--ink); color:var(--cream);} }
+  .terminal-line{font-family:"IBM Plex Mono", monospace; font-size:.85rem; opacity:.85;}
+  .terminal-line .p{color:var(--amber);}
+  .contact-title{font-family:"Zilla Slab", serif; font-size:1.9rem; font-weight:600;}
+  .contact-links{display:flex; gap:14px; flex-wrap:wrap;}
+  .contact-links a{
+    font-family:"IBM Plex Mono", monospace; font-size:.85rem; text-decoration:none;
+    border:1px solid color-mix(in srgb, var(--cream) 30%, transparent);
+    padding:11px 18px; border-radius:8px; display:inline-flex; gap:8px; align-items:center;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .contact-links a:hover{background:color-mix(in srgb, var(--pine) 30%, transparent); transform:translateY(-2px);}
+
+  footer{padding-block:28px; text-align:center; font-family:"IBM Plex Mono", monospace; font-size:.74rem; color:var(--ink-soft);}
+
+  @media (max-width:640px){
+    section{padding-block:52px;}
+    .exp-head{flex-direction:column;}
+    .cta-row .btn{flex:1 1 auto; justify-content:center;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav>
+  <div class="nav-inner">
+    <div class="brand">Sanjay<span class="dot">.</span>Hegde</div>
+    <ul class="nav-links" id="navlinks">
+      <li><a href="#home" data-nav>home</a></li>
+      <li><a href="#about" data-nav>about</a></li>
+      <li><a href="#stack" data-nav>stack</a></li>
+      <li><a href="#experience" data-nav>experience</a></li>
+      <li><a href="#projects" data-nav>projects</a></li>
+      <li><a href="#contact" data-nav>contact</a></li>
+    </ul>
+    <div class="status-pill"><span class="dotpulse"></span>open to work</div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section id="home">
+    <div class="hero-grid">
+      <div class="eyebrow reveal">whoami</div>
+      <h1 class="hero-name reveal">Sanjay G Hegde</h1>
+      <div class="hero-role reveal"><span id="typewriter"></span><span class="caret"></span></div>
+      <p class="hero-summary reveal">Computer Science graduate (B.E. 2026, CGPA 8.59) who builds CI/CD pipelines in Jenkins, containerizes Java and Spring Boot apps with Docker, and ships them to AWS EC2 and Kubernetes clusters running on kubeadm and K3s. I provision infrastructure with Terraform, configure servers with Ansible, and keep an eye on all of it with Prometheus, Grafana and Loki &mdash; comfortable chasing down image pull errors, pending pods and nodes that won't join. Looking for an entry-level DevOps or Cloud Engineer role.</p>
+      <div class="cta-row reveal">
+        <a class="btn btn-primary" href="mailto:sanjayhegde1636@gmail.com">Email me →</a>
+        <a class="btn btn-ghost" href="resume.pdf" target="_blank" rel="noopener">Resume ↗</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/sanjay-hegde16/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-ghost" href="https://github.com/Sanjay-Hegde16" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <div class="stat-row reveal">
+        <div class="stat"><div class="n">8.59</div><div class="l">CGPA / 10</div></div>
+        <div class="stat"><div class="n">3</div><div class="l">Shipped Pipelines</div></div>
+        <div class="stat"><div class="n">7</div><div class="l">AWS Services Used</div></div>
+        <div class="stat"><div class="n">Bengaluru</div><div class="l">Based In</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="eyebrow reveal">cat about.md</div>
+    <h2 class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.2rem); margin-bottom:18px;">A little more context</h2>
+    <div class="about-body reveal">
+      <p>I'm a final-year Computer Science student at <strong>KLS VDIT (VTU), Haliyal</strong>, finishing up in 2026, and I spent the first half of this year as a <strong>DevOps intern at JSpiders</strong> in Bengaluru. Most of my time goes into the parts of software that happen after the code is written &mdash; getting a build to trigger reliably, getting a container to start cleanly, getting a cluster to stay healthy under load.</p>
+      <p>Outside my internship I've shipped three infrastructure-heavy side projects on my own: a self-managed Kubernetes cluster provisioned entirely through Terraform and Ansible, a Jenkins pipeline with autoscaling for a Spring Boot app, and a live dashboard that streams pod logs and cluster alerts from whichever Kubernetes cluster you point it at. I like debugging real failures &mdash; <code>CrashLoopBackOff</code>, <code>ImagePullBackOff</code>, a node that just won't join &mdash; more than I like reading about them.</p>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="eyebrow reveal">cat stack.yaml</div>
+    <h2 class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.2rem); margin-bottom:26px;">Tools I reach for</h2>
+    <div class="stack-grid reveal">
+      <div class="stack-card">
+        <span class="stack-key">cloud/aws:</span>
+        <div class="chips">
+          <span class="chip">EC2</span><span class="chip">S3</span><span class="chip">IAM</span><span class="chip">VPC</span>
+          <span class="chip">Security Groups</span><span class="chip">RDS</span><span class="chip">Auto Scaling</span>
+          <span class="chip">ALB</span><span class="chip">CloudWatch</span><span class="chip">SNS</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-key">ci_cd:</span>
+        <div class="chips">
+          <span class="chip">Jenkins</span><span class="chip">Declarative Pipelines</span><span class="chip">Jenkinsfile</span>
+          <span class="chip">GitHub Webhooks</span><span class="chip">Maven</span><span class="chip">Git</span><span class="chip">GitHub</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-key">containers_orchestration:</span>
+        <div class="chips">
+          <span class="chip">Docker</span><span class="chip">Multi-stage builds</span><span class="chip">Docker Compose</span>
+          <span class="chip">Docker Hub</span><span class="chip">Kubernetes</span><span class="chip">kubeadm</span><span class="chip">K3s</span>
+          <span class="chip">kubectl</span><span class="chip">Ingress</span><span class="chip">ConfigMaps</span><span class="chip">Secrets</span>
+          <span class="chip">HPA</span><span class="chip">Rolling &amp; blue-green</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-key">iac_automation:</span>
+        <div class="chips">
+          <span class="chip">Terraform</span><span class="chip">Ansible</span><span class="chip">Bash</span><span class="chip">YAML</span><span class="chip">Groovy</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-key">monitoring:</span>
+        <div class="chips">
+          <span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Loki</span><span class="chip">Promtail</span><span class="chip">CloudWatch</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-key">linux_networking:</span>
+        <div class="chips">
+          <span class="chip">Linux/Ubuntu</span><span class="chip">SSH</span><span class="chip">DNS</span><span class="chip">TCP/IP</span>
+          <span class="chip">Firewalls</span><span class="chip">Nginx</span><span class="chip">Tomcat</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-key">languages:</span>
+        <div class="chips">
+          <span class="chip">Java</span><span class="chip">SQL</span><span class="chip">HTML</span><span class="chip">CSS</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-key">practices:</span>
+        <div class="chips">
+          <span class="chip">Observability</span><span class="chip">High availability</span><span class="chip">Secrets mgmt</span>
+          <span class="chip">Backup &amp; recovery</span><span class="chip">Rollback/rollout</span><span class="chip">RCA</span><span class="chip">Incident response</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="eyebrow reveal">tail -f experience.log</div>
+    <h2 class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.2rem); margin-bottom:26px;">Experience</h2>
+    <div class="exp-card reveal">
+      <div class="exp-head">
+        <div>
+          <div class="exp-role">DevOps Intern &mdash; JSpiders</div>
+          <div class="exp-meta">Rajajinagar, Bengaluru &nbsp;·&nbsp; Jan – Jul 2026</div>
+        </div>
+        <div class="badge"><span class="dotpulse"></span>completed</div>
+      </div>
+      <ul class="exp-list">
+        <li>Set up 5-stage Jenkins pipelines (checkout, Maven build, test, Docker image push, deploy) wired to GitHub webhooks, so deploys are no longer run by hand.</li>
+        <li>Wrote Dockerfiles for Spring Boot and Tomcat applications, tagged the images, pushed them to Docker Hub and ran them on AWS EC2.</li>
+        <li>Created Kubernetes Deployments, Services, ConfigMaps and Secrets, and shipped new versions with <code>kubectl set image</code>, so releases stay online.</li>
+        <li>Worked with 7 AWS services on Linux servers: EC2, IAM, VPC, Auto Scaling, Application Load Balancer, CloudWatch and SNS.</li>
+        <li>Automated repetitive server setup with shell scripts, and debugged failed builds, image pulls and containers that would not start.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="eyebrow reveal">ls ./projects</div>
+    <h2 class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.2rem); margin-bottom:26px;">Things I've shipped</h2>
+    <div class="proj-grid reveal">
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <div class="proj-title">Automated Kubernetes Deployment for a Java Web App</div>
+          <div class="status"><span class="dotpulse"></span>live</div>
+        </div>
+        <div class="proj-tags"><span>Terraform</span><span>Ansible</span><span>Docker</span><span>K3s</span><span>Nginx</span></div>
+        <ul class="proj-list">
+          <li>Provisioned AWS infrastructure for a self-managed K3s cluster with Terraform (VPC, subnets, security groups, EC2, S3), and configured the nodes with Ansible so the environment rebuilds from Git instead of console clicks.</li>
+          <li>Containerized a Java web app with Docker and deployed it as a Kubernetes Deployment and Service behind an Nginx Ingress with ConfigMaps and Secrets; released with <code>kubectl set image</code>, rolled back with <code>rollout undo</code>.</li>
+        </ul>
+        <a class="proj-link" href="https://github.com/Sanjay-Hegde16/cloudvault" target="_blank" rel="noopener">
+          View source
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <div class="proj-title">CI/CD Pipeline Automation for a Spring Boot App</div>
+          <div class="status"><span class="dotpulse"></span>live</div>
+        </div>
+        <div class="proj-tags"><span>Jenkins</span><span>Maven</span><span>Docker</span><span>HPA</span><span>Shell</span></div>
+        <ul class="proj-list">
+          <li>Designed a declarative Jenkins pipeline for a Spring Boot app, triggered by GitHub webhooks: checkout, Maven build, multi-stage Docker image build and push to Docker Hub.</li>
+          <li>Added a Horizontal Pod Autoscaler and rolling updates so the application keeps serving traffic under load and during releases.</li>
+        </ul>
+        <a class="proj-link" href="https://github.com/Sanjay-Hegde16/f1-race-control" target="_blank" rel="noopener">
+          View source
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <div class="proj-title">DevOps Pipeline Dashboard</div>
+          <div class="status"><span class="dotpulse"></span>live</div>
+        </div>
+        <div class="proj-tags"><span>Jenkins</span><span>Docker</span><span>Kubernetes</span><span>Maven</span><span>Webhooks</span></div>
+        <ul class="proj-list">
+          <li>Reads whichever cluster a signed-in developer connects in the browser, by service account token or uploaded kubeconfig, and tails pod logs live over Server-Sent Events.</li>
+          <li>Runs on Kubernetes behind a Service and Ingress, released with <code>kubectl set image</code>. Alerts come straight from cluster state: CrashLoopBackOff, ImagePullBackOff, pending pods and NotReady nodes.</li>
+        </ul>
+        <a class="proj-link" href="https://github.com/Sanjay-Hegde16/devops-pipeline-dashboard" target="_blank" rel="noopener">
+          View source
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="eyebrow reveal">cat education.txt &amp;&amp; cat academic_project.txt</div>
+    <div class="split reveal">
+      <div class="mini-card">
+        <h3>Academic Project</h3>
+        <div class="mini-tags"><span>Python</span><span>VGG-Face</span><span>ResNet</span><span>SQLite</span></div>
+        <p><strong style="color:var(--ink);">Deep Learning Based Disease Detection Using Facial Features</strong> &mdash; final-year project that classifies diseases from facial images using transfer learning on a small medical dataset. Handled image preprocessing, model training and evaluation.</p>
+        <div class="achieve">Sponsored by KSCST under the 49th Series Student Project Programme.</div>
+      </div>
+      <div class="mini-card">
+        <h3>Education</h3>
+        <p><strong style="color:var(--ink);">B.E., Computer Science and Engineering</strong><br>KLS VDIT (VTU), Haliyal</p>
+        <div class="edu-row"><span>2022 – 2026</span><span>CGPA 8.59 / 10</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="border-bottom:none;">
+    <div class="contact-card reveal">
+      <div class="terminal-line"><span class="p">$</span> curl -X POST api.sanjayhegde.dev/hire &ndash;&ndash;data "role=devops"</div>
+      <div class="contact-title">Let's build something that deploys itself.</div>
+      <p style="opacity:.85; max-width:520px;">Open to entry-level DevOps and Cloud Engineer roles &mdash; happy to talk pipelines, Kubernetes, or whatever broke in production this week.</p>
+      <div class="contact-links">
+        <a href="mailto:sanjayhegde1636@gmail.com">✉ sanjayhegde1636@gmail.com</a>
+        <a href="resume.pdf" target="_blank" rel="noopener">↗ Resume</a>
+        <a href="https://www.linkedin.com/in/sanjay-hegde16/" target="_blank" rel="noopener">in/ LinkedIn</a>
+        <a href="https://github.com/Sanjay-Hegde16" target="_blank" rel="noopener">⌥ GitHub</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Bengaluru, India &nbsp;·&nbsp; built by Sanjay G Hegde</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // progress bar
+  var bar = document.getElementById('progress');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = (isFinite(scrolled) ? scrolled : 0) + '%';
+  }
+  document.addEventListener('scroll', function(){ requestAnimationFrame(updateProgress); }, {passive:true});
+  updateProgress();
+
+  // typewriter
+  var roles = ["DevOps Engineer", "Cloud & CI/CD Automation", "Kubernetes Wrangler", "Pipeline Builder"];
+  var el = document.getElementById('typewriter');
+  if(el){
+    if(reduced){
+      el.textContent = roles[0];
+    } else {
+      var ri = 0, ci = 0, deleting = false;
+      function tick(){
+        var word = roles[ri];
+        if(!deleting){
+          ci++;
+          el.textContent = word.slice(0, ci);
+          if(ci === word.length){ deleting = true; setTimeout(tick, 1600); return; }
+        } else {
+          ci--;
+          el.textContent = word.slice(0, ci);
+          if(ci === 0){ deleting = false; ri = (ri+1) % roles.length; }
+        }
+        setTimeout(tick, deleting ? 35 : 65);
+      }
+      tick();
+    }
+  }
+
+  // scroll reveal
+  var revealEls = document.querySelectorAll('.reveal');
+  if(!reduced && 'IntersectionObserver' in window){
+    revealEls.forEach(function(e){ e.classList.add('reveal-hidden'); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.remove('reveal-hidden');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+    revealEls.forEach(function(e){ io.observe(e); });
+  }
+
+  // scrollspy + smooth scroll
+  var navLinks = document.querySelectorAll('[data-nav]');
+  var sections = Array.prototype.map.call(navLinks, function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+
+  navLinks.forEach(function(a){
+    a.addEventListener('click', function(ev){
+      ev.preventDefault();
+      var target = document.querySelector(a.getAttribute('href'));
+      if(target){ target.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }
+    });
+  });
+
+  if('IntersectionObserver' in window){
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var id = entry.target.id;
+          navLinks.forEach(function(a){
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, {rootMargin:'-40% 0px -50% 0px'});
+    sections.forEach(function(s){ spy.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
